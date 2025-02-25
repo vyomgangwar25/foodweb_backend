@@ -1,7 +1,4 @@
 package com.example.demo.entity;
-
-import java.util.Optional;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;

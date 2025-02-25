@@ -43,7 +43,21 @@ public class ItemService {
 			itemRepository.save(existingInfo);
 			return ResponseEntity.ok("data updated successfully");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage() + "data not found"); 
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage() + "data not found");
+		}
+	}
+
+	public ResponseEntity<?> delete(Integer id) {
+		try {
+			if (itemRepository.existsById(id)) {
+				itemRepository.deleteById(id);
+				return ResponseEntity.ok("item delete successfully!!");
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("item not found");
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e);
+
 		}
 	}
 

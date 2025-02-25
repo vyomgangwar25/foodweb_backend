@@ -1,11 +1,15 @@
 package com.example.demo.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.RegistrationDTO;
+import com.example.demo.entity.Roles;
 import com.example.demo.entity.User;
 import com.example.demo.repository.RolesRepository;
 import com.example.demo.repository.UserRepository;
@@ -22,7 +26,7 @@ public class UserService {
 			User user = repository.findByEmail(data.getEmail());
 			if (user != null) {
 				if (user.getPassword().equals(data.getPassword())) {
-					return ResponseEntity.ok("login successfully!!");
+					return ResponseEntity.ok(user);
 				} else {
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("incorrect old password!!");
 				}
@@ -39,16 +43,17 @@ public class UserService {
 		try {
 			User user = repository.findByEmail(data.getEmail());
 			if (user == null) {
+		 
 				User newUser = new User(data.getName(), data.getEmail(), data.getPassword(),
 						rolesRepository.findById(data.getRoleId()).get());
 				repository.save(newUser);
 				return ResponseEntity.ok("User registered Successfully!!");
 			} else {
-				return ResponseEntity.ok("User already present");
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user already exist!!");
 			}
 
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("dont know");
 		}
 	}
 
