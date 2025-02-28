@@ -1,15 +1,12 @@
 package com.example.demo.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.RegistrationDTO;
-import com.example.demo.entity.Roles;
 import com.example.demo.entity.User;
 import com.example.demo.repository.RolesRepository;
 import com.example.demo.repository.UserRepository;
@@ -21,11 +18,14 @@ public class UserService {
 	@Autowired
 	private RolesRepository rolesRepository;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	public ResponseEntity<?> Login(LoginDTO data) {
 		try {
 			User user = repository.findByEmail(data.getEmail());
 			if (user != null) {
-				if (user.getPassword().equals(data.getPassword())) {
+				if (passwordEncoder.matches(data.getPassword(), user.getPassword())) {
 					return ResponseEntity.ok(user);
 				} else {
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("incorrect old password!!");
@@ -43,8 +43,9 @@ public class UserService {
 		try {
 			User user = repository.findByEmail(data.getEmail());
 			if (user == null) {
-		 
-				User newUser = new User(data.getName(), data.getEmail(), data.getPassword(),
+
+				User newUser = new User(data.getName(), data.getEmail(),
+						passwordEncoder.encode(String.valueOf(data.getPassword())),
 						rolesRepository.findById(data.getRoleId()).get());
 				repository.save(newUser);
 				return ResponseEntity.ok("User registered Successfully!!");
@@ -56,7 +57,5 @@ public class UserService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("dont know");
 		}
 	}
-
- 
 
 }

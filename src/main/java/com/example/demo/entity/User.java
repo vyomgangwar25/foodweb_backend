@@ -16,7 +16,7 @@ import lombok.Setter;
 public class User extends CommonEntity {
 	private String name;
 	private String email;
-	private Integer password;
+	private String password;
 	@OneToOne
 	@JoinColumn(name = "role_id", referencedColumnName = "id")
 	private Roles roleId;
