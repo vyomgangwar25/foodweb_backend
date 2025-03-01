@@ -6,27 +6,36 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.demo.dto.LoginDTO;
+import com.example.demo.dto.LoginResponseDTO;
 import com.example.demo.dto.RegistrationDTO;
 import com.example.demo.entity.User;
 import com.example.demo.repository.RolesRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.util.JwtToken;
 
 @Service
 public class UserService {
+
 	@Autowired
 	private UserRepository repository;
+
 	@Autowired
 	private RolesRepository rolesRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private JwtToken jwtToken;
+
 	public ResponseEntity<?> Login(LoginDTO data) {
 		try {
 			User user = repository.findByEmail(data.getEmail());
 			if (user != null) {
 				if (passwordEncoder.matches(data.getPassword(), user.getPassword())) {
-					return ResponseEntity.ok(user);
+					String token = jwtToken.generateToken(user.getEmail(), user.getRoleId().getRole());
+					LoginResponseDTO loginResponseDTO = new LoginResponseDTO(user.getName(), user.getEmail(), token);
+					return ResponseEntity.ok(loginResponseDTO);
 				} else {
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("incorrect old password!!");
 				}

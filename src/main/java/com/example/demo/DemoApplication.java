@@ -18,6 +18,7 @@ public class DemoApplication implements CommandLineRunner {
 		List<Integer> ll = Arrays.asList(1, 2, 55, 2, 5, 8);
 		 Integer a = ll.stream().sorted().distinct().skip(ll.size() - 3).findFirst().get();
 		System.out.println(a);
+	 
 
 	}
 
