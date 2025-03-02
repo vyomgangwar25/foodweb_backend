@@ -28,9 +28,8 @@ public class SecurityConfig {
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).httpBasic(httpBasic -> httpBasic.disable())
 				.formLogin(login -> login.disable())
-				.authorizeHttpRequests(
-						(requests) -> requests.requestMatchers("/user/login", "/user/registration", "/items/list")
-								.permitAll().anyRequest().authenticated())
+				.authorizeHttpRequests((requests) -> requests.requestMatchers("/user/login", "/user/registration")
+						.permitAll().anyRequest().authenticated())
 				.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 

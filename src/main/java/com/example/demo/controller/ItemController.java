@@ -10,6 +10,7 @@ import com.example.demo.service.ItemService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/items")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ItemController {
 
 	@Autowired
@@ -31,6 +32,7 @@ public class ItemController {
 		return itemService.add(data);
 	}
 
+	// @PreAuthorize("hasRole('ROLE_User')")
 	@GetMapping("/list")
 	ResponseEntity<?> list() {
 		return itemService.list();
@@ -40,10 +42,9 @@ public class ItemController {
 	ResponseEntity<?> update(@PathVariable Integer id, @RequestBody UpdateDataDTO data) {
 		return itemService.update(id, data);
 	}
-	
+
 	@DeleteMapping("/delete/{id}")
-	ResponseEntity<?>delete(@PathVariable Integer id)
-	{
+	ResponseEntity<?> delete(@PathVariable Integer id) {
 		return itemService.delete(id);
 	}
 

@@ -12,6 +12,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.entity.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,11 +31,10 @@ public class JwtToken {
 		return createToken(claims, userName);
 	}
 
-	// Create a JWT token with specified claims and subject (user name)
 	private String createToken(Map<String, Object> claims, String userName) {
 		return Jwts.builder().setClaims(claims).setSubject(userName).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // Token valid for 30 minutes
-				.signWith(generateKey(SECRET)).compact();
+				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)).signWith(generateKey(SECRET))
+				.compact();
 	}
 
 	public SecretKey generateKey(String secret) {
@@ -70,9 +71,13 @@ public class JwtToken {
 		return extractClaim(token, Claims::getExpiration);
 	}
 
-	public Boolean validateToken(String token) {
+	public User validateToken(String token, User existingUser) {
 		final String username = extractUsername(token);
-		return ( !isTokenExpired(token));
+		if (username.equals(existingUser.getName()) && !isTokenExpired(token)) {
+			
+			return (User) existingUser;
+		}
+		return null;
 	}
 
 }
