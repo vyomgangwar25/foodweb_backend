@@ -53,15 +53,13 @@ public class UserService {
 			User user = repository.findByEmail(data.getEmail());
 			if (user == null) {
 
-				User newUser = new User(data.getName(), data.getEmail(),
-						passwordEncoder.encode(String.valueOf(data.getPassword())),
+				User newUser = new User(data.getName(), data.getEmail(), passwordEncoder.encode(data.getPassword()),
 						rolesRepository.findById(data.getRoleId()).get());
 				repository.save(newUser);
 				return ResponseEntity.ok("User registered Successfully!!");
 			} else {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("user already exist!!");
 			}
-
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("dont know");
 		}

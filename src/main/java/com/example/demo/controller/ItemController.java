@@ -32,7 +32,7 @@ public class ItemController {
 		return itemService.add(data);
 	}
 
-	// @PreAuthorize("hasRole('ROLE_User')")
+	 @PreAuthorize("hasRole('ROLE_Admin')")
 	@GetMapping("/list")
 	ResponseEntity<?> list() {
 		return itemService.list();

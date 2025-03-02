@@ -5,15 +5,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import com.example.demo.entity.User;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -58,23 +53,19 @@ public class JwtToken {
 		return extractClaim(token, Claims::getSubject);
 	}
 
-	/**
-	 * this method is used to check whether the token is expired or not
-	 */
 	public Boolean isTokenExpired(String token) {
 		Boolean isExpired = extractExpiration(token).before(new Date());
+
 		return isExpired;
 	}
 
 	public Date extractExpiration(String token) {
-
 		return extractClaim(token, Claims::getExpiration);
 	}
 
 	public User validateToken(String token, User existingUser) {
 		final String username = extractUsername(token);
-		if (username.equals(existingUser.getName()) && !isTokenExpired(token)) {
-			
+		if (username.equals(existingUser.getEmail()) && !isTokenExpired(token)) {
 			return (User) existingUser;
 		}
 		return null;
