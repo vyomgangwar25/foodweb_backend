@@ -42,7 +42,7 @@ public class ItemController {
 	ResponseEntity<?> update(@PathVariable Integer id, @RequestBody UpdateDataDTO data) {
 		return itemService.update(id, data);
 	}
-
+	 @PreAuthorize("hasRole('ROLE_Admin')")
 	@DeleteMapping("/delete/{id}")
 	ResponseEntity<?> delete(@PathVariable Integer id) {
 		return itemService.delete(id);
