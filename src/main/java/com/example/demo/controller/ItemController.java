@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,11 +29,12 @@ public class ItemController {
 	private ItemService itemService;
 
 	@PostMapping("/add")
+	@RequestMapping(method = RequestMethod.GET)
 	ResponseEntity<?> additems(@RequestBody AddItemDTO data) {
 		return itemService.add(data);
 	}
 
-	 @PreAuthorize("hasRole('ROLE_Admin')")
+	@PreAuthorize("hasRole('ROLE_Admin')")
 	@GetMapping("/list")
 	ResponseEntity<?> list() {
 		return itemService.list();
@@ -42,7 +44,8 @@ public class ItemController {
 	ResponseEntity<?> update(@PathVariable Integer id, @RequestBody UpdateDataDTO data) {
 		return itemService.update(id, data);
 	}
-	 @PreAuthorize("hasRole('ROLE_Admin')")
+
+	@PreAuthorize("hasRole('ROLE_Admin')")
 	@DeleteMapping("/delete/{id}")
 	ResponseEntity<?> delete(@PathVariable Integer id) {
 		return itemService.delete(id);
