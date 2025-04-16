@@ -23,7 +23,10 @@ public class CsvService {
 
 	public ResponseEntity<String> csvHandler(MultipartFile file) {
 		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+
+			// read the first line of csv i.e header
 			String[] rawHeaders = reader.readNext();
+
 			List<String> csvHeaders = Arrays.stream(rawHeaders).map(String::trim).filter(header -> !header.isEmpty())
 					.collect(Collectors.toList());
 
@@ -34,21 +37,14 @@ public class CsvService {
 			if (!csvHeaders.containsAll(EXPECTED_HEADERS)) {
 				return ResponseEntity.badRequest().body("CSV headers do not match expected headers");
 			}
-			Integer csvsize = csvHeaders.size();
-			int key = 0;
 
-			while (csvsize != 3) {
+			String rowData[];
+			while ((rowData = reader.readNext()) != null) {
 				Map<String, String> dataMap = new HashMap<>();
 				for (int i = 0; i < 3; i++) {
-					System.out.println(EXPECTED_HEADERS.get(i));
-					System.out.println(csvHeaders.get(key + i + 3));
-
-					dataMap.put(EXPECTED_HEADERS.get(i), csvHeaders.get(key + i + 3));
+					dataMap.put(EXPECTED_HEADERS.get(i), rowData[i]);
 				}
-				key = key + 3;
-				csvsize = csvsize - 3;
 
-				// Assuming CSVpractice entity has appropriate setters
 				CSVpractice data = new CSVpractice();
 				data.setFirstName(dataMap.get("firstname"));
 				data.setLastName(dataMap.get("lastname"));
