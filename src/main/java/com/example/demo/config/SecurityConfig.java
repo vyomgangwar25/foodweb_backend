@@ -2,6 +2,7 @@ package com.example.demo.config;
 
 import java.util.Arrays;
 
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +20,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.example.demo.filter.CustomFilter;
 
 @Configuration
+@EnableBatchProcessing
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+	
+	
 
 	@Autowired
 	private CustomFilter customFilter;

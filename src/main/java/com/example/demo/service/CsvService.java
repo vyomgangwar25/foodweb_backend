@@ -22,6 +22,7 @@ public class CsvService {
 	private static final List<String> EXPECTED_HEADERS = Arrays.asList("firstname", "lastname", "college");
 
 	public ResponseEntity<String> csvHandler(MultipartFile file) {
+	 
 		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
 
 			// read the first line of csv i.e header
@@ -41,7 +42,7 @@ public class CsvService {
 			String rowData[];
 			while ((rowData = reader.readNext()) != null) {
 				Map<String, String> dataMap = new HashMap<>();
-				for (int i = 0; i < 3; i++) {
+				for (int i = 0; i < EXPECTED_HEADERS.size(); i++) {
 					dataMap.put(EXPECTED_HEADERS.get(i), rowData[i]);
 				}
 
