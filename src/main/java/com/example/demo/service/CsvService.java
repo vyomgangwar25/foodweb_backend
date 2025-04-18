@@ -22,7 +22,12 @@ public class CsvService {
 	private static final List<String> EXPECTED_HEADERS = Arrays.asList("firstname", "lastname", "college");
 
 	public ResponseEntity<String> csvHandler(MultipartFile file) {
-	 
+
+		// file.getInputStream() is used to receive the input stream
+		// new InputStreamReader() is used to read that stream and decode that stream
+		// into character
+		// csv reader is used to read file
+
 		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
 
 			// read the first line of csv i.e header
