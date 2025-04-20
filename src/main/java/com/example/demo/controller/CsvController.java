@@ -67,7 +67,7 @@ public class CsvController {
 			System.out.println(path);
 
 			 JobParameters params = new JobParametersBuilder()
-		                .addString("filePath",  tempFile.getAbsolutePath()) // <-- pass path to job
+		                .addString("filePath",  tempFile.getAbsolutePath())  
 		                .addLong("startAt", System.currentTimeMillis()) 
 		                .toJobParameters();
 

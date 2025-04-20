@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.example.demo.entity.CSVpractice;
@@ -38,7 +38,7 @@ public class CSVConfig {
 	FlatFileItemReader<CSVpractice> reader(@Value("#{jobParameters['filePath']}") String filePath) {
 		System.out.println(filePath);
 		FlatFileItemReader<CSVpractice> itemReader = new FlatFileItemReader<>();
-		itemReader.setResource(new ClassPathResource(filePath));  
+		itemReader.setResource(new FileSystemResource(filePath));
 		itemReader.setName("csvReader");
 		itemReader.setLinesToSkip(1);
 		itemReader.setLineMapper(lineMapper());
@@ -48,6 +48,7 @@ public class CSVConfig {
 	// MAPPER
 	private LineMapper<CSVpractice> lineMapper() {
 		DefaultLineMapper<CSVpractice> lineMapper = new DefaultLineMapper<>();
+
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setDelimiter(",");
 		tokenizer.setNames("firstname", "lastname", "college");
@@ -72,17 +73,19 @@ public class CSVConfig {
 	RepositoryItemWriter<CSVpractice> writer() {
 		RepositoryItemWriter<CSVpractice> writer = new RepositoryItemWriter<>();
 		writer.setRepository(csvRepository);
-		writer.setMethodName("saveAll");
+		writer.setMethodName("save");
 		return writer;
 	}
 
 	// STEP
 	@Bean
-	Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager, FlatFileItemReader<CSVpractice> reader) {
-		return new StepBuilder("csv-step", jobRepository).<CSVpractice, CSVpractice>chunk(1, transactionManager)
+	Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager,
+			FlatFileItemReader<CSVpractice> reader) {
+		return new StepBuilder("csv-step", jobRepository).<CSVpractice, CSVpractice>chunk(10, transactionManager)
 				.reader(reader).processor(processor()).writer(writer()).build();
 	}
-
+ //JobRepository saves the job status, PlatformTransactionManager saves your data safely in chunks
+	
 	// Job
 	@Bean
 	Job importCSVJob(JobRepository jobRepository, Step step1) {
