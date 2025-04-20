@@ -52,7 +52,8 @@ public class SecurityConfig {
 		http.csrf(csrf -> csrf.disable()).httpBasic(httpBasic -> httpBasic.disable()).cors(cors -> {
 			cors.configurationSource(corsConfigurationSource());
 		}).formLogin(login -> login.disable())
-				.authorizeHttpRequests((requests) -> requests.requestMatchers("/user/login", "/user/registration","/CSV/upload","userDetail/upload","/orderdetails/upload"
+				.authorizeHttpRequests((requests) -> requests.requestMatchers("/user/login", "/user/registration","/CSV/upload","userDetail/upload","/orderdetails/upload" 
+						,"/CSV/download"
 						,"/userDetail/get/**")
 						.permitAll().anyRequest().authenticated())
 				.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
